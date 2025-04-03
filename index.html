@@ -150,3 +150,48 @@
     const form = document.getElementById("leadForm");
     const overlay = document.getElementById("overlay");
     const successModal = document.getElementById("successModal");
+    const errorModal = document.getElementById("errorModal");
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwQVPkaU0nZj2MtSMNP2qQfejAJVYSGQeD3Mf8NTcL12xnL3dtGwetpxMXkXkoBIB5U/exec"; // Replace with your Web App URL
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const data = {
+        name: document.getElementById("name").value.trim(),
+        mobile: document.getElementById("mobile").value.trim(),
+        community: document.getElementById("community").value.trim(),
+        dob: document.getElementById("dob").value.trim(), // Get the DOB value
+      };
+
+      try {
+        const response = await fetch(WEB_APP_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
+
+        const result = await response.json();
+
+        if (result.status === "success") {
+          overlay.style.display = "block";
+          successModal.style.display = "block";
+          form.reset();
+          setTimeout(() => {
+            overlay.style.display = "none";
+            successModal.style.display = "none";
+          }, 3000);
+        } else {
+          throw new Error(result.message);
+        }
+      } catch (error) {
+        errorModal.textContent = error.message || "Failed to submit. Please try again.";
+        overlay.style.display = "block";
+        errorModal.style.display = "block";
+        setTimeout(() => {
+          overlay.style.display = "none";
+          errorModal.style.display = "none";
+        }, 3000);
+      }
+    });
+  </script>
+</body>
+</html>
