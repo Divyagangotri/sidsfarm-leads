@@ -234,29 +234,22 @@
           // If location fails, keep as "N/A"
         }
       }
-
       try {
         const response = await fetch(WEB_APP_URL, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data),
-          mode: "cors",
+          mode: "no-cors", // Change from "cors" to "no-cors"
           redirect: "follow"
         });
-
-        const result = await response.json();
+        // With no-cors, we can't access response.json(), so handle differently
         loading.style.display = "none";
-
-        if (result.status === "success") {
-          overlay.style.display = "block";
-          successModal.style.display = "block";
-          form.reset();
-          setTimeout(hideModals, 3000);
-        } else {
-          throw new Error(result.message);
-        }
+        overlay.style.display = "block";
+        successModal.style.display = "block";
+        form.reset();
+        setTimeout(hideModals, 3000);
       } catch (error) {
-        showError(error.message || "Failed to submit. Please try again.");
+        showError("Failed to submit. Please try again.");
         loading.style.display = "none";
       }
     });
